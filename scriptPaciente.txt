@@ -1,0 +1,11 @@
+create table paciente(
+Id bigint(255),
+nomePaciente varchar(255),
+nomeResponsavel varchar(255),
+telefoneResponsavel bigint(100),
+medicamento varchar(255),
+horarioMedicamento varchar(255),
+endereco varchar (255),
+lembretes varchar (255)
+)
+
