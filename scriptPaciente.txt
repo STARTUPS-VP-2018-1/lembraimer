@@ -7,5 +7,6 @@ medicamento varchar(255),
 horarioMedicamento varchar(255),
 endereco varchar (255),
 lembretes varchar (255),
+senha varchar(16),
 PRIMARY KEY (Id)
 )
