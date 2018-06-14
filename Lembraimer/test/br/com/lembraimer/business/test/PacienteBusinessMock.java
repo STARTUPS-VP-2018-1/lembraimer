@@ -1,23 +1,25 @@
-package br.com.lembraimer.business;
+package br.com.lembraimer.business.test;
 
 import br.com.lembraimer.db.DataBase;
-import br.com.lembraimer.business.interfaces.PacienteInterface;
-import br.com.lembraimer.dominio.Paciente;
+
+import br.com.lembraimer.dominio.test.PacienteMock;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import br.com.lembraimer.dominio.Endereco;
-import br.com.lembraimer.dominio.Usuario;
-import br.com.lembraimer.tela.TelaCadastro;
-import br.com.lembraimer.tela.TelaPesquisa;
+import br.com.lembraimer.dominio.test.EnderecoMock;
+import br.com.lembraimer.dominio.test.UsuarioMock;
+import br.com.lembraimer.interfaces.test.PacienteInterfaceMock;
+import br.com.lembraimer.tela.test.TelaPesquisaMock;
+import br.com.lembraimer.tela.test.TelaCadastroMock;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
 
-public class PacienteBusiness implements PacienteInterface {
+public class PacienteBusinessMock implements PacienteInterfaceMock {
 
-    public Paciente salvarPaciente(Paciente paciente, Endereco endereco, TelaCadastro tela, Usuario usuario) {
-       if(validarPaciente(paciente) || validarEndereco(endereco)||validarUsuario(usuario)){
+    @Override
+    public PacienteMock salvarPaciente(PacienteMock paciente, EnderecoMock endereco, TelaCadastroMock tela) {
+       if(validarPaciente(paciente) || validarEndereco(endereco)){
            try {
             Connection conn;
             PreparedStatement stmt;
@@ -26,7 +28,7 @@ public class PacienteBusiness implements PacienteInterface {
             
             //cria a string para inserir no banco
             String query = "INSERT INTO paciente ( nomePaciente, nomeResponsavel, telefoneResponsavel, "
-                    + "medicamento,horarioMedicamento, endereco, lembretes,senha) VALUES(?,?,?,?,?,?,?,?)";
+                    + "medicamento,horarioMedicamento, endereco, lembretes) VALUES(?,?,?,?,?,?,?)";
             
             //seta os valores na string de inserção
             stmt = conn.prepareStatement(query);
@@ -37,7 +39,7 @@ public class PacienteBusiness implements PacienteInterface {
             stmt.setString(5, paciente.getHorarioMedicamento());
             stmt.setString(6, endereco.getRua());
             stmt.setString(7, paciente.getLembrete());
-            stmt.setString(8, usuario.getSenha());
+            
             //executa o comando no banco de dados
             stmt.executeUpdate();
             
@@ -48,8 +50,7 @@ public class PacienteBusiness implements PacienteInterface {
         }catch(SQLException e){
             System.out.println("Ocorreu um erro de conexão " + e);
         }
-           JOptionPane.showMessageDialog(null, " O Paciente foi cadastrado com sucesso,");
-           
+           JOptionPane.showMessageDialog(null, " O Paciente foi cadastrado com sucesso!");
            
            limpaCampos(tela);
            
@@ -60,7 +61,7 @@ public class PacienteBusiness implements PacienteInterface {
     }
 
     @Override
-    public Paciente buscarPacientePorNome(Paciente nome, TelaPesquisa telaPesquisa) {
+    public PacienteMock buscarPacientePorNome(PacienteMock nome, TelaPesquisaMock telaPesquisa) {
        try {
             Connection conn;
             PreparedStatement cmd;
@@ -98,7 +99,7 @@ public class PacienteBusiness implements PacienteInterface {
        return null;
      }
     
-    public boolean validarPaciente(Paciente paciente){
+    public boolean validarPaciente(PacienteMock paciente){
         boolean clienteValido = true;
         if(paciente !=null)
         {
@@ -124,7 +125,7 @@ public class PacienteBusiness implements PacienteInterface {
      }
 
 
-    public boolean validarEndereco(Endereco endereco){
+    public boolean validarEndereco(EnderecoMock endereco){
         boolean clienteValido = true;
         if(endereco !=null)
         {
@@ -136,20 +137,8 @@ public class PacienteBusiness implements PacienteInterface {
         }
         return clienteValido;
      }
-    public boolean validarUsuario(Usuario usuario){
-        boolean clienteValido = true;
-        if(usuario !=null)
-        {
-            if(usuario.getSenha()== null||
-               usuario.getSenha().equals(""))
-                {
-                clienteValido = false;
-                }
-        }
-        return clienteValido;
-     }
     
-    public void limpaCampos(TelaCadastro tela){
+    public void limpaCampos(TelaCadastroMock tela){
        tela.campoNomePaciente.setText("");
        tela.campoNomeResponsavel.setText("");
        tela.campoTelefoneResponsavel.setText("");
@@ -157,15 +146,6 @@ public class PacienteBusiness implements PacienteInterface {
        tela.campoHoraMedicamento.setText("");
        tela.campoEndereco.setText("");
        tela.campoLembrete.setText("");
-       tela.jPasswordField1.setText("");
     }
-
-
-    @Override
-    public Paciente salvarPaciente(Paciente paciente, Endereco endereco, TelaCadastro telacadastro) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
 
 }
